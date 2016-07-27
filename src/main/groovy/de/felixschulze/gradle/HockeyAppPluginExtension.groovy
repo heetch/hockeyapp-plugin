@@ -60,6 +60,11 @@ class HockeyAppPluginExtension {
     def Map<String, String> variantToMandatory = null
     def String hockeyApiUrl = "https://rink.hockeyapp.net/api/2/apps"
 
+    def String jiraUrlTitle = null
+    def String jiraRepoUrl = null
+    def String jiraUsername = null
+    def String jiraPassword = null
+    def String jiraCard = null
 
     private final Project project
 
