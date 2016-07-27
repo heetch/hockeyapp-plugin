@@ -25,6 +25,8 @@
 package de.felixschulze.gradle
 
 import android.util.Base64
+import groovy.json.JsonParserType
+import org.apache.commons.codec.binary.Base64;
 import com.android.build.gradle.api.ApplicationVariant
 import de.felixschulze.gradle.util.FileHelper
 import de.felixschulze.gradle.util.ProgressHttpEntityWrapper
@@ -51,7 +53,8 @@ import org.gradle.api.logging.Logger
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.logging.progress.ProgressLogger
 import org.gradle.internal.logging.progress.ProgressLoggerFactory
-import org.json.JSONObject
+
+import java.nio.charset.Charset
 
 /**
  * Upload task for plugin
@@ -263,19 +266,15 @@ class HockeyAppUploadTask extends DefaultTask {
                 hockeyApp.jiraRepoUrl != null && hockeyApp.jiraCard != null
                 && hockeyApp.jiraPassword != null && hockeyApp.jiraUsername != null) {
             String credentials = hockeyApp.jiraUsername + ":" + hockeyApp.jiraPassword;
-            JSONObject parentData = new JSONObject();
-            JSONObject data = new JSONObject()
+            String data = '{"object": {"url":"' + hockeyAppBuildUrl + '", "title":"'+ hockeyApp.jiraUrlTitle +'"}}'
+
             HttpPost httpPost = new HttpPost("https://${hockeyApp.jiraRepoUrl}/rest/api/2/issue/${hockeyApp.jiraCard}/remotelink")
 
             String base64EncodedCredentials = Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
             httpPost.setHeader("Authorization", "Basic " + base64EncodedCredentials);
             httpPost.setHeader(HTTP.CONTENT_TYPE, "application/json");
 
-            data.put("url", hockeyAppBuildUrl)
-            data.put("title", hockeyApp.jiraUrlTitle)
-            parentData.put("object", data)
-
-            httpPost.setEntity(new ByteArrayEntity(parentData.toString().getBytes("UTF8")))
+            httpPost.setEntity(new ByteArrayEntity(data.getBytes(Charset.forName("UTF-8"))))
             HttpResponse response = httpClient.execute(httpPost);
 
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_CREATED) {

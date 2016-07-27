@@ -5,3 +5,5 @@
 example/target
 build
 .idea
+local.properties
+gradle/wrapper/gradle-wrapper.properties
