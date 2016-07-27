@@ -13,10 +13,10 @@ Add to your build.gradle
 ```gradle
 buildscript {
     repositories {
-        mavenCentral()
+        maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'de.felixschulze.gradle:gradle-hockeyapp-plugin:3.4'
+        classpath 'de.felixschulze.gradle:gradle-hockeyapp-plugin:3.6.1'
     }
 }
 
