@@ -81,6 +81,12 @@ hockeyapp {
 * `variantToTags`: Optional: `[variantName: "1", variantName2: "2"]` map between your variants and tags
 * `variantToNotify`: Optional: `[variantName: "1", variantName2: "2"]` map between your variants and notify
 
+This fork also includes a new capability which is to update a Jira card and paste a hockeyapp build link into it. For this feature to work you'll need to use these inclusive parameters: 
+* `jiraUrlTitle`:  The Jira url title 
+* `jiraRepoUrl`: The Jira repo url such as "heetch.atlassian.net"
+* `jiraUsername`: Your Jira username (a dedicated user is recomended to do this)
+* `jiraPassword`: Your Jira password
+* `jiraCard`: The card in which you want the build url to be uploaded
 
 ### iOS or custom Android build only options
 * `appFileNameRegex`: Only needed for iOS or if you don't use the android gradle plugin `appFileNameRegex = ".*.ipa"
