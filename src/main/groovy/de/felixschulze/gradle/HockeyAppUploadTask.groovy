@@ -24,9 +24,6 @@
 
 package de.felixschulze.gradle
 
-import android.util.Base64
-import groovy.json.JsonParserType
-import org.apache.commons.codec.binary.Base64;
 import com.android.build.gradle.api.ApplicationVariant
 import de.felixschulze.gradle.util.FileHelper
 import de.felixschulze.gradle.util.ProgressHttpEntityWrapper
@@ -270,7 +267,7 @@ class HockeyAppUploadTask extends DefaultTask {
 
             HttpPost httpPost = new HttpPost("https://${hockeyApp.jiraRepoUrl}/rest/api/2/issue/${hockeyApp.jiraCard}/remotelink")
 
-            String base64EncodedCredentials = Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
+            String base64EncodedCredentials = credentials.bytes.encodeBase64().toString()
             httpPost.setHeader("Authorization", "Basic " + base64EncodedCredentials);
             httpPost.setHeader(HTTP.CONTENT_TYPE, "application/json");
 
