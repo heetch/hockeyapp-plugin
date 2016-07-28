@@ -16,7 +16,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'de.felixschulze.gradle:gradle-hockeyapp-plugin:3.6.3'
+        classpath 'de.felixschulze.gradle:gradle-hockeyapp-plugin:3.6.4'
     }
 }
 
