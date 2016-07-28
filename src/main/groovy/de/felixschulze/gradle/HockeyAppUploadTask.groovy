@@ -278,7 +278,7 @@ class HockeyAppUploadTask extends DefaultTask {
             HttpResponse response = httpClient.execute(httpPost);
 
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_CREATED) {
-                parseResponseAndThrowError(response)
+                logger.error("Error: " + response.getEntity().getContent())
             }
         }
     }
