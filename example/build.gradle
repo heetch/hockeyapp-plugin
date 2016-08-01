@@ -1,10 +1,11 @@
 buildscript {
     repositories {
+        mavenLocal()
         jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.1.1'
-        classpath 'de.felixschulze.gradle:gradle-hockeyapp-plugin:3.1'
+        classpath 'de.felixschulze.gradle:gradle-hockeyapp-plugin:3.6.3-SNAPSHOT'
     }
 }
 

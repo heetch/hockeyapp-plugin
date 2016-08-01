@@ -38,16 +38,20 @@ import org.apache.http.HttpStatus
 import org.apache.http.client.HttpClient
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.methods.HttpPost
+import org.apache.http.entity.ByteArrayEntity
 import org.apache.http.entity.mime.MultipartEntityBuilder
 import org.apache.http.entity.mime.content.FileBody
 import org.apache.http.entity.mime.content.StringBody
 import org.apache.http.impl.client.HttpClientBuilder
+import org.apache.http.protocol.HTTP
 import org.gradle.api.DefaultTask
 import org.gradle.api.Nullable
 import org.gradle.api.logging.Logger
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.logging.progress.ProgressLogger
 import org.gradle.internal.logging.progress.ProgressLoggerFactory
+
+import java.nio.charset.Charset
 
 /**
  * Upload task for plugin
@@ -243,12 +247,36 @@ class HockeyAppUploadTask extends DefaultTask {
                     logger.info("Upload information: Title: '" + uploadResponse.title?.toString() + "' Config url: '" + uploadResponse.config_url?.toString()) + "'";
                     logger.debug("Upload response: " + uploadResponse.toString())
                     logger.lifecycle("Application public url " + uploadResponse.public_url?.toString())
+                    pasteBuildUrlToJiraCard(httpClient, uploadResponse.public_url?.toString())
                 }
             }
             if (hockeyApp.teamCityLog) {
                 println TeamCityStatusMessageHelper.buildProgressString(TeamCityProgressType.FINISH, "Application uploaded successfully.")
             }
             progressLogger.completed()
+        }
+    }
+
+    def void pasteBuildUrlToJiraCard(HttpClient httpClient, String hockeyAppBuildUrl) {
+
+        if (hockeyApp.jiraUrlTitle != null &&
+                hockeyApp.jiraRepoUrl != null && hockeyApp.jiraCard != null
+                && hockeyApp.jiraPassword != null && hockeyApp.jiraUsername != null) {
+            String credentials = hockeyApp.jiraUsername + ":" + hockeyApp.jiraPassword;
+            String data = '{"object": {"url":"' + hockeyAppBuildUrl + '", "title":"'+ hockeyApp.jiraUrlTitle +'"}}'
+
+            HttpPost httpPost = new HttpPost("https://${hockeyApp.jiraRepoUrl}/rest/api/2/issue/${hockeyApp.jiraCard}/remotelink")
+
+            String base64EncodedCredentials = credentials.bytes.encodeBase64().toString()
+            httpPost.setHeader("Authorization", "Basic " + base64EncodedCredentials);
+            httpPost.setHeader(HTTP.CONTENT_TYPE, "application/json");
+
+            httpPost.setEntity(new ByteArrayEntity(data.getBytes(Charset.forName("UTF-8"))))
+            HttpResponse response = httpClient.execute(httpPost);
+
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_CREATED) {
+                logger.error("Error: " + response.getEntity().getContent())
+            }
         }
     }
 
