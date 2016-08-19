@@ -242,7 +242,7 @@ class HockeyAppUploadTask extends DefaultTask {
                 if (uploadResponse) {
                     logger.info("Upload information: Title: '" + uploadResponse.title?.toString() + "' Config url: '" + uploadResponse.config_url?.toString()) + "'";
                     logger.debug("Upload response: " + uploadResponse.toString())
-                    def jiraTaskResult = JiraTask.pasteBuildUrlToJiraCard(logger, httpClient, hockeyApp, uploadResponse.public_url?.toString(), uploadResponse.config_url?.toString())
+                    def jiraTaskResult = JiraTask.pasteBuildUrlToJiraCard(httpClient, hockeyApp, uploadResponse.public_url?.toString(), uploadResponse.config_url?.toString())
                     logger.lifecycle("Result: " + jiraTaskResult)
                 }
             }
